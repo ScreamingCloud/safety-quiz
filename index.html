@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173b39">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="職安練習">
+  <meta name="description" content="2025 職安健常識問答手冊練習，按錯題率加強記憶。">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>職安練習 · 2025 手冊</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="masthead">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">安</span><span><strong>職安練習</strong><small>2025 手冊 · 1,585 題</small></span></div>
+      <nav class="top-nav" aria-label="主要功能">
+        <button class="nav-button active" type="button" data-view="quiz" aria-current="page">練習</button>
+        <button class="nav-button" type="button" data-view="progress">進度</button>
+        <button class="nav-button" type="button" data-view="settings">資料</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="quiz-view" class="view">
+        <div class="intro"><div class="eyebrow">為記得更牢而練習</div><h1>下一題，練得更熟。</h1><p>答錯的題目會按錯題率更常出現。每次作答後即時核對手冊答案。</p></div>
+        <div class="control-card">
+          <label>題目範圍<select id="topic-select"><option value="0">全部 20 個主題</option></select></label>
+          <label>練習方式<select id="mode-select"><option value="smart">智能抽題 · 加強錯題</option><option value="new">未做過的題目</option><option value="mistakes">只練錯題</option><option value="all">全部題目</option></select></label>
+        </div>
+        <div class="session-strip" aria-label="本次練習統計"><span>本次練習</span><strong id="session-total">0</strong><span>題 · 答對</span><strong id="session-correct">0</strong><span>題</span></div>
+        <div id="question-area" class="question-card" aria-live="polite"><p class="loading">正在載入手冊題目…</p></div>
+        <div class="quiz-footnote">題目及答案取自《職安健常識問答比賽手冊 2025》。安全及法例資料請以最新官方資料為準。</div>
+      </section>
+
+      <section id="progress-view" class="view" hidden>
+        <div class="intro"><div class="eyebrow">你的學習紀錄</div><h1>看見進步，找出弱點。</h1><p>紀錄保存在這部裝置的瀏覽器。常錯題可直接點開重練。</p></div>
+        <div class="stat-grid"><div class="stat-card"><span>已練題目</span><strong id="stat-seen">0</strong><small>/ 1,585 題</small></div><div class="stat-card"><span>總答對率</span><strong id="stat-accuracy">—</strong><small>所有作答次數</small></div><div class="stat-card"><span>有錯紀錄</span><strong id="stat-missed">0</strong><small>題需要溫習</small></div></div>
+        <div class="panel"><div class="panel-heading"><h2>主題進度</h2><span>已練 / 題數</span></div><div id="topic-progress"></div></div>
+        <div class="panel"><div class="panel-heading"><h2>優先重練</h2><span>按錯題率排序</span></div><div id="hard-list" class="hard-list"></div></div>
+      </section>
+
+      <section id="settings-view" class="view" hidden>
+        <div class="intro"><div class="eyebrow">資料與使用</div><h1>帶着練習紀錄走。</h1><p>下載備份後，可在另一部裝置匯入。這個版本沒有帳戶或跨裝置自動同步。</p></div>
+        <div class="panel"><h2>練習資料</h2><p>答案紀錄只存於目前瀏覽器。清除網站資料或使用私密瀏覽，可能令紀錄消失。</p><div class="action-row"><button id="export-button" class="button primary" type="button">下載紀錄備份</button><label class="button secondary file-button">匯入紀錄備份<input id="import-input" type="file" accept="application/json,.json"></label></div><p id="settings-message" class="settings-message" role="status"></p></div>
+        <div class="panel"><h2>安裝到 iPhone</h2><ol class="steps"><li>在 iPhone 的 Safari 開啟這個網站。</li><li>點選「分享」，然後選「加到主畫面」。</li><li>首次開啟並載入題庫後，即可離線練習。</li></ol></div>
+        <div class="panel"><h2>資料來源</h2><p>《職安健常識問答比賽手冊 2025》共 20 個主題、1,585 道選擇題。每題標示手冊 PDF 頁碼，方便核對。</p><button id="reset-button" class="text-button" type="button">清除這部裝置的練習紀錄</button></div>
+      </section>
+    </main>
+    <footer class="site-footer">職安練習 <span>·</span> 自主溫習工具</footer>
+  </div>
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>
