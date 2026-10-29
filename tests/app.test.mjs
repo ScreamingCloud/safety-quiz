@@ -5,6 +5,11 @@ import { pickQuestion, recordAnswer, reviewWeight } from '../scheduler.mjs';
 
 const data = JSON.parse(readFileSync(new URL('../data/questions.json', import.meta.url)));
 
+test('the packaged question module matches the extracted handbook data', async () => {
+  const { default: packaged } = await import('../questions.mjs');
+  assert.deepEqual(packaged, data);
+});
+
 test('handbook data contains the complete, usable question set', () => {
   assert.equal(data.topics.length, 20);
   assert.equal(data.questions.length, 1585);

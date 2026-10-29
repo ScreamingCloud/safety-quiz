@@ -28,8 +28,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir dist
-          cp index.html styles.css app.mjs scheduler.mjs sw.js manifest.webmanifest icon.svg apple-touch-icon.png dist/
-          cp -R data dist/
+          cp index.html styles.css app.mjs scheduler.mjs questions.mjs sw.js manifest.webmanifest icon.svg apple-touch-icon.png dist/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

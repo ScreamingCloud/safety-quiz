@@ -1,4 +1,5 @@
 import { pickQuestion, recordAnswer, mistakeRate } from './scheduler.mjs';
+import handbook from './questions.mjs';
 
 const STORAGE_KEY = 'safety-quiz-progress-v1';
 const $ = id => document.getElementById(id);
@@ -213,9 +214,7 @@ async function init() {
     nextQuestion();
   });
   try {
-    const response = await fetch('data/questions.json');
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    state.data = await response.json();
+    state.data = handbook;
     if (!Array.isArray(state.data.questions) || !Array.isArray(state.data.topics)) throw new Error('題庫格式不正確');
     state.data.topics.forEach((topic, index) => {
       const option = document.createElement('option');

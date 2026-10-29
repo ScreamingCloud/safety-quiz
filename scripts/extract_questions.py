@@ -2,7 +2,7 @@
 """Convert pdftotext -layout output from the 2025 handbook into app data.
 
 Usage: pdftotext -layout SQ_2025_Handbook.pdf /tmp/sq_handbook.txt
-       python scripts/extract_questions.py /tmp/sq_handbook.txt data/questions.json
+       python scripts/extract_questions.py /tmp/sq_handbook.txt data/questions.json questions.mjs
 """
 
 import json
@@ -64,10 +64,13 @@ def extract(source):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        raise SystemExit("Usage: extract_questions.py INPUT_TEXT OUTPUT_JSON")
+    if len(sys.argv) != 4:
+        raise SystemExit("Usage: extract_questions.py INPUT_TEXT OUTPUT_JSON OUTPUT_MODULE")
     result = extract(Path(sys.argv[1]))
     path = Path(sys.argv[2])
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-    print(f"Wrote {len(result['questions'])} questions to {path}")
+    serialized = json.dumps(result, ensure_ascii=False, separators=(",", ":"))
+    path.write_text(serialized + "\n", encoding="utf-8")
+    module_path = Path(sys.argv[3])
+    module_path.write_text("// Generated from the 2025 handbook. See scripts/extract_questions.py.\nexport default " + serialized + ";\n", encoding="utf-8")
+    print(f"Wrote {len(result['questions'])} questions to {path} and {module_path}")

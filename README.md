@@ -18,7 +18,7 @@ python3 -m http.server 8000
 
 ## 內容和紀錄
 
-- `data/questions.json` 是由使用者提供的 2025 手冊 PDF 生成的題庫，包含題號、主題、PDF 頁碼、題目、選項和答案。
+- `data/questions.json` 是由使用者提供的 2025 手冊 PDF 生成的題庫，包含題號、主題、PDF 頁碼、題目、選項和答案。網頁直接載入同時生成的 `questions.mjs`，不需另行擷取 JSON。
 - `scripts/extract_questions.py` 可從 `pdftotext -layout` 的輸出重新產生題庫；產生過程核對 1,585 道題目及每題三個選項和一個答案。
 - 作答紀錄存於瀏覽器的 `localStorage`。沒有帳戶或自動同步；可在「資料」頁下載及匯入備份。
 - 手冊內容為 2025 年版本。涉及安全或法例的實務判斷，請以最新官方資料為準。
@@ -33,5 +33,5 @@ node --test tests/*.test.mjs
 
 ```sh
 pdftotext -layout /path/to/SQ_2025_Handbook.pdf /tmp/sq_handbook.txt
-python3 scripts/extract_questions.py /tmp/sq_handbook.txt data/questions.json
+python3 scripts/extract_questions.py /tmp/sq_handbook.txt data/questions.json questions.mjs
 ```
