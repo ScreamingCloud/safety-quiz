@@ -14,7 +14,7 @@ python3 -m http.server 8000
 
 ## 發佈到 iPhone
 
-儲存庫已備有 GitHub Pages 工作流程。將程式碼推送到 `main` 後，工作流程會嘗試啟用及部署 Pages；如儲存庫權限不允許自動啟用，請在 GitHub 儲存庫的 **Settings → Pages** 將來源設為 **GitHub Actions**。首次部署成功後，可用 `https://screamingcloud.github.io/safety-quiz/` 在 iPhone Safari 開啟。離線練習須先連線載入一次完整題庫；若日後更新網站，請再連線開啟以取得新版。
+GitHub Pages 使用 **Deploy from a branch → main → / (root)**，直接發佈專案根目錄的靜態網頁。首次建置成功後，可用 `https://screamingcloud.github.io/safety-quiz/` 在 iPhone Safari 開啟。離線練習須先連線載入一次完整題庫；若日後更新網站，請再連線開啟以取得新版。
 
 ## 內容和紀錄
 
