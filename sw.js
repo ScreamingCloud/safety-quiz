@@ -1,4 +1,4 @@
-const CACHE_NAME = 'safety-quiz-2025-v2';
+const CACHE_NAME = 'safety-quiz-2026-v1';
 const ASSETS = ['./', './index.html', './styles.css', './app.mjs', './scheduler.mjs', './questions.mjs', './manifest.webmanifest', './icon.svg', './apple-touch-icon.png'];
 
 self.addEventListener('install', event => {

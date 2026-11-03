@@ -1,6 +1,6 @@
 # 職安練習
 
-手機優先的離線練習網頁，使用《職安健常識問答比賽手冊 2025》的 1,585 道選擇題。智能抽題會優先選取曾答錯的題目，並根據每題的錯題率增加重練機會。亦可選擇主題、未做過的題目或只練錯題。
+手機優先的離線練習網頁，使用《職安健常識問答比賽手冊 2026》AECOM 版本 PDF 中的 1,509 道選擇題。智能抽題會優先選取曾答錯的題目，並根據每題的錯題率增加重練機會。亦可選擇主題、未做過的題目或只練錯題。
 
 ## 本機使用
 
@@ -18,10 +18,10 @@ GitHub Pages 使用 **Deploy from a branch → main → / (root)**，直接發�
 
 ## 內容和紀錄
 
-- `data/questions.json` 是由使用者提供的 2025 手冊 PDF 生成的題庫，包含題號、主題、PDF 頁碼、題目、選項和答案。網頁直接載入同時生成的 `questions.mjs`，不需另行擷取 JSON。
-- `scripts/extract_questions.py` 可從 `pdftotext -layout` 的輸出重新產生題庫；產生過程核對 1,585 道題目及每題三個選項和一個答案。
-- 作答紀錄存於瀏覽器的 `localStorage`。沒有帳戶或自動同步；可在「資料」頁下載及匯入備份。
-- 手冊內容為 2025 年版本。涉及安全或法例的實務判斷，請以最新官方資料為準。
+- `data/questions.json` 是由使用者提供的 2026 手冊 PDF 生成的題庫，包含題號、主題、PDF 實際頁碼、題目、選項和答案。網頁直接載入同時生成的 `questions.mjs`，不需另行擷取 JSON。
+- `scripts/extract_questions.py` 可從 `pdftotext -layout` 的輸出重新產生題庫；產生過程核對 1,509 道題目及每題三個選項和一個答案。這份 PDF 目錄列出 20 個主題，但第 7、17、19 章沒有題目，因此網頁提供 17 個主題。
+- 作答紀錄存於瀏覽器的 `localStorage`。2026 題庫使用新的紀錄鍵；2025 紀錄保留在瀏覽器，但不計入新版，避免將舊題的作答結果套用到已更改的題目。沒有帳戶或自動同步；可在「資料」頁下載及匯入 2026 版備份。
+- 手冊內容為 2026 年版本。涉及安全或法例的實務判斷，請以最新官方資料為準。
 
 ## 檢查
 
@@ -32,6 +32,6 @@ node --test tests/*.test.mjs
 如要從原 PDF 重建題庫：
 
 ```sh
-pdftotext -layout /path/to/SQ_2025_Handbook.pdf /tmp/sq_handbook.txt
+pdftotext -layout '/path/to/SQ_2026_Handbook (AECOM).pdf' /tmp/sq_handbook.txt
 python3 scripts/extract_questions.py /tmp/sq_handbook.txt data/questions.json questions.mjs
 ```

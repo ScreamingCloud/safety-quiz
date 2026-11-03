@@ -11,17 +11,20 @@ test('the packaged question module matches the extracted handbook data', async (
 });
 
 test('handbook data contains the complete, usable question set', () => {
+  assert.equal(data.source, '職安健常識問答比賽手冊 2026');
   assert.equal(data.topics.length, 20);
-  assert.equal(data.questions.length, 1585);
-  assert.equal(new Set(data.questions.map(q => q.id)).size, 1585);
+  assert.equal(data.questions.length, 1509);
+  assert.equal(new Set(data.questions.map(q => q.id)).size, 1509);
+  assert.deepEqual([7, 17, 19].filter(topic => data.questions.some(q => q.topic === topic)), []);
   for (const q of data.questions) {
     assert.ok(q.topic >= 1 && q.topic <= 20);
-    assert.ok(q.page >= 6 && q.page <= 337);
+    assert.ok(q.page >= 3 && q.page <= 328);
     assert.ok(q.question.length > 3);
     assert.equal(q.choices.length, 3);
     assert.ok(q.choices.every(choice => choice.length > 0));
     assert.ok(q.answer >= 0 && q.answer <= 2);
   }
+  assert.equal(data.questions.find(q => q.id === '20.64').answer, 0);
 });
 
 test('a higher mistake rate gives a question a higher review weight', () => {

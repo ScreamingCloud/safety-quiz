@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Convert pdftotext -layout output from the 2025 handbook into app data.
+"""Convert pdftotext -layout output from the 2026 AECOM handbook into app data.
 
-Usage: pdftotext -layout SQ_2025_Handbook.pdf /tmp/sq_handbook.txt
+Usage: pdftotext -layout 'SQ_2026_Handbook (AECOM).pdf' /tmp/sq_handbook.txt
        python scripts/extract_questions.py /tmp/sq_handbook.txt data/questions.json questions.mjs
 """
 
 import json
+import itertools
 import re
 import sys
 from pathlib import Path
@@ -19,6 +20,7 @@ TOPICS = [
 ]
 
 QUESTION = re.compile(r"^\s*(\d{1,2}\.\d{1,3})\s+(.+)$", re.M)
+CHAPTER = re.compile(r"^\s*(\d{1,2})\.\s+([^\n]+)$", re.M)
 OPTION = re.compile(r"^\s*([abc])[.．]\s+(.+)$", re.M)
 ANSWER = re.compile(r"^\s*答案[：:]\s*([abc])\s*$", re.M)
 
@@ -31,11 +33,23 @@ def compact(value):
 
 def extract(source):
     text = source.read_text(encoding="utf-8")
-    matches = list(QUESTION.finditer(text))
+    chapters = [(match.start(), int(match.group(1))) for match in CHAPTER.finditer(text)
+                if int(match.group(1)) <= len(TOPICS) and match.group(2).strip() == TOPICS[int(match.group(1)) - 1]]
+    if [chapter for _, chapter in chapters] != [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20]:
+        raise ValueError("Unexpected 2026 AECOM chapter sequence")
+    matches = []
+    for index, (start, chapter) in enumerate(chapters):
+        end = chapters[index + 1][0] if index + 1 < len(chapters) else len(text)
+        matches.extend(match for match in QUESTION.finditer(text, start, end)
+                       if int(match.group(1).split(".")[0]) == chapter)
     questions = []
     for index, match in enumerate(matches):
         end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
-        body = text[match.end():end]
+        raw_body = text[match.end():end]
+        answer = ANSWER.search(raw_body)
+        if not answer:
+            raise ValueError(f"Missing answer: {match.group(1)}")
+        body = raw_body[:answer.end()]
         options = list(OPTION.finditer(body))
         answers = list(ANSWER.finditer(body))
         if len(options) != 3 or [item.group(1) for item in options] != ["a", "b", "c"] or len(answers) != 1:
@@ -58,9 +72,13 @@ def extract(source):
             "choices": choices,
             "answer": "abc".index(answers[0].group(1)),
         })
-    if len(questions) != 1585 or len({q["id"] for q in questions}) != len(questions):
-        raise ValueError(f"Expected 1585 unique questions; got {len(questions)}")
-    return {"source": "職安健常識問答比賽手冊 2025", "topics": TOPICS, "questions": questions}
+    if len(questions) != 1509 or len({q["id"] for q in questions}) != len(questions):
+        raise ValueError(f"Expected 1509 unique questions; got {len(questions)}")
+    for chapter, group in itertools.groupby(questions, lambda q: q["topic"]):
+        numbers = [int(q["id"].split(".")[1]) for q in group]
+        if numbers != list(range(1, len(numbers) + 1)):
+            raise ValueError(f"Question numbering gap in chapter {chapter}")
+    return {"source": "職安健常識問答比賽手冊 2026", "topics": TOPICS, "questions": questions}
 
 
 if __name__ == "__main__":
@@ -72,5 +90,5 @@ if __name__ == "__main__":
     serialized = json.dumps(result, ensure_ascii=False, separators=(",", ":"))
     path.write_text(serialized + "\n", encoding="utf-8")
     module_path = Path(sys.argv[3])
-    module_path.write_text("// Generated from the 2025 handbook. See scripts/extract_questions.py.\nexport default " + serialized + ";\n", encoding="utf-8")
+    module_path.write_text("// Generated from the 2026 AECOM handbook. See scripts/extract_questions.py.\nexport default " + serialized + ";\n", encoding="utf-8")
     print(f"Wrote {len(result['questions'])} questions to {path} and {module_path}")

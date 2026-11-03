@@ -1,7 +1,7 @@
 import { pickQuestion, recordAnswer, mistakeRate } from './scheduler.mjs';
 import handbook from './questions.mjs';
 
-const STORAGE_KEY = 'safety-quiz-progress-v1';
+const STORAGE_KEY = 'safety-quiz-progress-2026-v1';
 const $ = id => document.getElementById(id);
 const state = { data: null, progress: {}, current: null, recent: [], answered: false, displayChoices: [], sessionTotal: 0, sessionCorrect: 0 };
 
@@ -95,7 +95,7 @@ function renderQuestion() {
   }
   area.append(choices);
   const actions = element('div', 'question-actions');
-  actions.append(element('span', 'source-ref', `來源：2025 手冊 · PDF 第 ${q.page} 頁`));
+  actions.append(element('span', 'source-ref', `來源：2026 手冊 · PDF 第 ${q.page} 頁`));
   area.append(actions);
 }
 
@@ -144,6 +144,7 @@ function renderProgress() {
   topicProgress.replaceChildren();
   state.data.topics.forEach((name, index) => {
     const count = all.filter(q => q.topic === index + 1).length;
+    if (!count) return;
     const done = seen.filter(q => q.topic === index + 1).length;
     const row = element('div', 'topic-row');
     row.append(element('span', 'topic-name', `${index + 1}. ${name}`), element('span', 'topic-fraction', `${done} / ${count}`));
@@ -171,7 +172,7 @@ function renderProgress() {
 }
 
 function exportProgress() {
-  const blob = new Blob([JSON.stringify({ version: 1, exportedAt: new Date().toISOString(), progress: state.progress }, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ version: 2, source: handbook.source, exportedAt: new Date().toISOString(), progress: state.progress }, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
@@ -184,7 +185,8 @@ async function importProgress(file) {
   if (!file) return;
   try {
     const saved = JSON.parse(await file.text());
-    if (saved.version !== 1 || !saved.progress || typeof saved.progress !== 'object' || Array.isArray(saved.progress)) throw new Error('格式不正確');
+    if (saved.version !== 2 || saved.source !== handbook.source) throw new Error('只可匯入 2026 手冊的紀錄');
+    if (!saved.progress || typeof saved.progress !== 'object' || Array.isArray(saved.progress)) throw new Error('格式不正確');
     const ids = new Set(state.data.questions.map(q => q.id));
     const cleaned = {};
     for (const [id, record] of Object.entries(saved.progress)) {
@@ -216,7 +218,12 @@ async function init() {
   try {
     state.data = handbook;
     if (!Array.isArray(state.data.questions) || !Array.isArray(state.data.topics)) throw new Error('題庫格式不正確');
+    const availableTopics = new Set(state.data.questions.map(question => question.topic));
+    $('topic-all-option').textContent = `全部 ${availableTopics.size} 個主題`;
+    $('bank-count').textContent = state.data.questions.length.toLocaleString('zh-HK');
+    $('progress-bank-count').textContent = `/ ${state.data.questions.length.toLocaleString('zh-HK')} 題`;
     state.data.topics.forEach((topic, index) => {
+      if (!availableTopics.has(index + 1)) return;
       const option = document.createElement('option');
       option.value = String(index + 1);
       option.textContent = `${index + 1}. ${topic}`;
