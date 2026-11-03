@@ -1,5 +1,5 @@
 import { pickQuestion, recordAnswer, mistakeRate } from './scheduler.mjs';
-import handbook from './questions.mjs';
+import handbook from './questions.mjs?v=2026-2';
 
 const STORAGE_KEY = 'safety-quiz-progress-2026-v1';
 const $ = id => document.getElementById(id);
